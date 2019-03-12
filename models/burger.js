@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes) {
     // Sequelize model to create `burgers` table in db
-    var Burger = sequelize.define("Burger", {
+    let Burger = sequelize.define("Burger", {
         burger_name: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -13,5 +13,25 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: false
         }
     });
+
+    Burger.associate = function(models) {
+        // Burger is associated with one creator
+        Burger.belongsTo(models.Creator, {
+            onDelete: "CASCADE",
+            foreignKey: {
+                allowNull: true
+            }
+        });
+    };
+
+    Burger.associate = function(models) {
+        // Burger is associated with one creator
+        Burger.belongsTo(models.Customer, {
+            foreignKey: {
+                allowNull: true
+            }
+        });
+    };
+
     return Burger;
 };
