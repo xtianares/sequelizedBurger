@@ -41,21 +41,33 @@
     $(".create-burger").on("submit", function(event){
         event.preventDefault();
         $(".create-burger button + span").remove();
-        let bName = $("#burger-name").val().trim();
+        let bName = $("#burger-name").val().trim(),
+            cName = $("#creator-name").val().trim();
         console.log(bName);
         if (bName != null && bName != "") {
             let burgerData = {
-                burgerName: bName
+                burgerName: bName,
+                creatorName: cName
             };
 
             $.ajax("/api/create", {
                 type: "POST",
                 data: burgerData
             })
-            .then(function(){
+            .then(function(data){
                 // Reload the page to get the updated list
+                console.log(data);
                 location.reload();
+                // $.ajax("/api/create", {
+                //     type: "POST",
+                //     data: burgerData
+                // })
+                // .then(function(){
+                //     // Reload the page to get the updated list
+                //     location.reload();
+                // });
             });
+
         }
         else {
             $(".create-burger button").after(" <span class='text-danger'>Please enter a burger name!</span>")

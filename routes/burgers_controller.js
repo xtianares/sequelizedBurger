@@ -8,11 +8,21 @@ module.exports = function(app) {
     });
 
     app.post("/api/create", function (req, res) {
-        db.Burger.create({
-            burger_name: req.body.burgerName
+        // if creator exits, use ID
+        // else update db and use new ID
+        db.Creator.create({
+            creator_name: req.body.creatorName
         })
         .then(function (data) {
-            res.status(200).end();
+            // res.json(data);
+            // console.log(data);
+            db.Burger.create({
+                burger_name: req.body.burgerName,
+                CreatorId: data.id
+            })
+            .then(function (data) {
+                res.status(200).end();
+            });
         });
     });
 

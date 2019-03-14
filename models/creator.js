@@ -1,7 +1,7 @@
 module.exports = function(sequelize, DataTypes) {
     // Sequelize model to create `Customers` table in db
     let Creator = sequelize.define("Creator", {
-        customer_name: {
+        creator_name: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
