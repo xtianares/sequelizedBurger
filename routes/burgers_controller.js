@@ -2,25 +2,33 @@ let db = require("../models");
 
 module.exports = function(app) {
     app.get("/", function (req, res) {
-        db.Burger.findAll({}).then(function (data) {
+        // db.Burger.findAll({}).then(function (data) {
+        //     res.render("index", { burgers: data });
+        // });
+        db.Burger.findAll({
+            where: {},
+            include: [db.Creator]
+        }).then(function(data) {
             res.render("index", { burgers: data });
         });
+
     });
 
     app.post("/api/create", function (req, res) {
         // if creator exits, use ID
+        let creator_name = req.params.creatorName
         // else update db and use new ID
         db.Creator.create({
             creator_name: req.body.creatorName
         })
-        .then(function (data) {
+        .then(function (creatorData) {
             // res.json(data);
             // console.log(data);
             db.Burger.create({
                 burger_name: req.body.burgerName,
-                CreatorId: data.id
+                CreatorId: creatorData.id
             })
-            .then(function (data) {
+            .then(function (burgerData) {
                 res.status(200).end();
             });
         });
