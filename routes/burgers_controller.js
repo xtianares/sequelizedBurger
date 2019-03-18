@@ -7,46 +7,69 @@ module.exports = function(app) {
         // });
         db.Burger.findAll({
             where: {},
-            include: [db.Creator]
+            include: [
+                { model: db.Creator },
+                { model: db.Customer }
+            ]
         }).then(function(data) {
+            // console.log(data);
             res.render("index", { burgers: data });
         });
 
     });
 
     app.post("/api/create", function (req, res) {
-        // if creator exits, use ID
-        let creator_name = req.params.creatorName
-        // else update db and use new ID
-        db.Creator.create({
-            creator_name: req.body.creatorName
-        })
-        .then(function (creatorData) {
-            // res.json(data);
+        // check if creator already exist, use ID if so
+        // else insert ne creator in DB and use the new ID
+        db.Creator.findOne({
+            where: { creator_name: req.body.creatorName }
+        }).then(function(data) {
             // console.log(data);
-            db.Burger.create({
-                burger_name: req.body.burgerName,
-                CreatorId: creatorData.id
-            })
-            .then(function (burgerData) {
-                res.status(200).end();
-            });
+            if(data){
+                db.Burger.create({
+                    burger_name: req.body.burgerName,
+                    CreatorId: data.id
+                })
+                .then(function (burgerData) {
+                    res.json(burgerData).end();
+                });
+            }
+            else {
+                db.Creator.create({
+                    creator_name: req.body.creatorName
+                })
+                .then(function (creatorData) {
+                    // res.json(data);
+                    // console.log(data);
+                    db.Burger.create({
+                        burger_name: req.body.burgerName,
+                        CreatorId: creatorData.id
+                    })
+                    .then(function (burgerData) {
+                        res.json(burgerData).end();
+                    });
+                });
+            }
         });
+
     });
 
     app.put("/api/update/:id", function (req, res) {
-        db.Burger.update({
-            devoured: true
-        }, {
-            where: {
-                id: req.params.id
-            }
+        db.Customer.create({
+            customer_name: req.body.customerName
         })
-        .then(function (data) {
-            if(data.changedRows === 0){
-                return res.status(404).end();
-            }
-            res.status(200).end();
+        .then(function (customerData) {
+            db.Burger.update({
+                devoured: true,
+                CustomerId: customerData.id
+            }, {
+                where: {
+                    id: req.params.id
+                }
+            })
+            .then(function (burgerData) {
+                res.json(burgerData).end();
+            });
         });
     });
 };

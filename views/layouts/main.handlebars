@@ -23,11 +23,18 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
 <script>
-    $(".eat-btn").on("click", function(event) {
+    $(".show-modal").on("click", function(event) {
         let id = $(this).data("id");
+        $(".eat-btn").data("id", id);
+    });
+    $(".eat-btn").on("click", function(event) {
+        let id = $(this).data("id"),
+            cName = $("#customer-name").val().trim();
         let burgerData = {
-            devoured: true
+            devoured: true,
+            customerName: cName
         };
+        $("#customer-name").val("");
         // Send the PUT request.
         $.ajax("/api/update/" + id, {
             type: "PUT",
@@ -43,7 +50,6 @@
         $(".create-burger button + span").remove();
         let bName = $("#burger-name").val().trim(),
             cName = $("#creator-name").val().trim();
-        console.log(bName);
         if (bName != null && bName != "") {
             let burgerData = {
                 burgerName: bName,
@@ -56,7 +62,7 @@
             })
             .then(function(data){
                 // Reload the page to get the updated list
-                console.log(data);
+                // console.log(data);
                 location.reload();
             });
 

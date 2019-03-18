@@ -15,18 +15,15 @@ module.exports = function(sequelize, DataTypes) {
     });
 
     Burger.associate = function(models) {
-        // Burger is associated with one creator
-        Burger.belongsTo(models.Customer, {
+        // Burgers are associated with creator
+        Burger.belongsTo(models.Creator, {
+            onDelete: "CASCADE",
             foreignKey: {
                 allowNull: true
             }
         });
-    };
-
-    Burger.associate = function(models) {
-        // Burger is associated with one creator
-        Burger.belongsTo(models.Creator, {
-            onDelete: "CASCADE",
+        // Burger is associated with one customer
+        Burger.belongsTo(models.Customer, {
             foreignKey: {
                 allowNull: true
             }
