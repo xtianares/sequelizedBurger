@@ -26,31 +26,40 @@
     $(".show-modal").on("click", function(event) {
         let id = $(this).data("id");
         $(".eat-btn").data("id", id);
+        $("#customer-modal").modal('show')
     });
     $(".eat-btn").on("click", function(event) {
+        $("#customer-modal .validation").remove();
         let id = $(this).data("id"),
             cName = $("#customer-name").val().trim();
-        let burgerData = {
-            devoured: true,
-            customerName: cName
-        };
-        $("#customer-name").val("");
-        // Send the PUT request.
-        $.ajax("/api/update/" + id, {
-            type: "PUT",
-            data: burgerData
-        })
-        .then(function() {
-            // Reload the page to get the updated list
-            location.reload();
-        });
+        if (cName != null && cName != "") {
+            let burgerData = {
+                devoured: true,
+                customerName: cName
+            };
+            $("#customer-name").val("");
+
+            // Send the PUT request.
+            $.ajax("/api/update/" + id, {
+                type: "PUT",
+                data: burgerData
+            })
+            .then(function() {
+                // Reload the page to get the updated list
+                location.reload();
+            });
+            $("#customer-modal").modal('hide')
+        }
+        else {
+            $("#customer-modal .eat-btn").before("<span class='text-danger validation'>Please enter your name!</span>")
+        }
     });
     $(".create-burger").on("submit", function(event){
         event.preventDefault();
-        $(".create-burger button + span").remove();
+        $(".create-burger .validation").remove();
         let bName = $("#burger-name").val().trim(),
             cName = $("#creator-name").val().trim();
-        if (bName != null && bName != "") {
+        if (bName != null && bName != "" && cName != null && cName != "") {
             let burgerData = {
                 burgerName: bName,
                 creatorName: cName
@@ -65,10 +74,9 @@
                 // console.log(data);
                 location.reload();
             });
-
         }
         else {
-            $(".create-burger button").after(" <span class='text-danger'>Please enter a burger name!</span>")
+            $(".create-burger button").before("<span class='text-light validation'>Please enter a burger name!</span>")
         }
     });
 </script>
